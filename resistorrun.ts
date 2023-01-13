@@ -1,47 +1,44 @@
 class Resistor {
     r: number = 0;
-    constructor(r: number) {
+    maxPower: number = 0;
+    maxVoltage: number = 0;
+
+    constructor(r: number, maxPower: number, maxVoltage: number) {
         this.r = r;
+        this.maxPower = maxPower;
+        this.maxVoltage = maxVoltage;
     }
+
     getCurrent(u: number): number {
         return u / this.r;
     }
-    getPower(u: number): number{
-        return u * this.r;
+    getPower(u: number): number {
+        return u * this.getCurrent(u);
     }
-    getAmperage(w: number, v: number): number {
-        return w / v
+    getMaxPower(): number {
+        return this.maxPower;
     }
-    getResistance(w: number, v: number ): number {
-        return v / this.getAmperage(w, v)
+    voltageCheck(u: number): boolean {
+        return u <= this.maxVoltage
     }
-    getTemp(w: number, ml: number): number {
-        return Math.floor(20+(60/(4.19*(ml/w))))
-   }
+}
+
+let r1 = new Resistor(220, 100, 20);
+console.log(r1.voltageCheck(14)); // true, sest max voltage alla 20
+console.log(r1.voltageCheck(32)); // false, sest max voltage üle 20
+
+const resistors: Resistor[] = [
+    new Resistor(220, 100, 10),
+    new Resistor(330, 200, 15),
+    new Resistor(100, 50, 5),
+    new Resistor(100, 70, 8)
+];
+
+function getAllowedResistor(voltage: number, resistors: Resistor[]): Resistor[] {
+    return resistors.filter(resistor => resistor.voltageCheck(voltage));
 
 }
-/*
-let resistors: Resistor[] = [];
-let r1: Resistor = new Resistor(110)
-console.log(r1.getCurrent(5))
-let r2: Resistor = new Resistor(220)
-console.log(r2.getCurrent(5))
-let r3: Resistor = new Resistor(4700)
-console.log(r3.getCurrent(5))
-resistors.push(r1)
-resistors.push(r2)
-resistors.push(r3)
-let totalCurrent: number = 0;
-resistors.forEach((resistor) => {totalCurrent += resistor.getCurrent(5); });
-console.log(resistors)
-console.log(totalCurrent)
- */
+let allowedResistor = getAllowedResistor(8, resistors); // output = 3, sest üks alla 8 voldi
+console.log(allowedResistor)
 
-let r1 = new Resistor(2);
-console.log(r1.getPower(5));
-console.log(r1.getAmperage(6,4))
-console.log(r1.getResistance(6,4))
-console.log(r1.getTemp(1000,1000))
-console.log(r1.getAmperage(1000, 220))
-console.log(r1.getResistance(1000,220))
 
